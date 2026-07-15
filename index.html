@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>document.documentElement.className='js';</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>$LUCKY — The Luckiest Coin on Robinhood</title>
+<link rel="icon" type="image/png" href="assets/logo.png" />
+<link rel="apple-touch-icon" href="assets/logo.png" />
+<meta name="description" content="No utility. No roadmap. Just one question every winner asked first: what if you got lucky?" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --void:#050805;
+    --void-2:#0a110a;
+    --panel:#0c150c;
+    --line:rgba(140,220,90,.14);
+    --lime:#c7f02e;      /* logo lime */
+    --lime-2:#a6e60a;
+    --rh:#00c805;        /* robinhood green */
+    --neon:#39ff14;      /* acid clover glow */
+    --gold:#ffc53d;
+    --gold-2:#ffe27a;
+    --cream:#eafbe7;
+    --muted:#7f9c7c;
+    --muted-2:#5a7457;
+    --red:#ff4d4d;
+    --maxw:1200px;
+    --ease:cubic-bezier(.2,.8,.2,1);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--void);color:var(--cream);
+    font-family:'Space Grotesk',system-ui,sans-serif;
+    font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  h1,h2,h3{margin:0;font-family:'Anton',Impact,sans-serif;font-weight:400;letter-spacing:.01em;line-height:.92;text-transform:uppercase}
+  .mono{font-family:'Space Mono',monospace}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  section{position:relative}
+  ::selection{background:var(--lime);color:#000}
+
+  /* ---------- ATMOSPHERE ---------- */
+  .grain{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .scanline{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.5;
+    background:repeating-linear-gradient(to bottom,transparent 0 3px,rgba(0,0,0,.14) 3px 4px);}
+
+  /* floating coins/clovers */
+  .float-field{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .floater{position:absolute;opacity:.14;animation:drift linear infinite}
+  @keyframes drift{0%{transform:translateY(110vh) rotate(0)}100%{transform:translateY(-20vh) rotate(360deg)}}
+
+  /* ---------- NAV ---------- */
+  header{position:fixed;top:0;left:0;right:0;z-index:50;transition:.3s var(--ease)}
+  header.scrolled{background:rgba(5,8,5,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:70px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:'Anton',sans-serif;font-size:22px;letter-spacing:.03em}
+  .brand .chip{width:38px;height:38px;border-radius:10px;object-fit:cover;display:block;box-shadow:0 0 22px rgba(199,240,46,.5)}
+  .brand b{color:var(--lime)}
+  .nav-right{display:flex;align-items:center;gap:22px}
+  .nav-links{display:flex;gap:26px;font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+  .nav-links a{transition:color .2s}.nav-links a:hover{color:var(--lime)}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;padding:12px 22px;border-radius:999px;
+    font-weight:700;font-size:14px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:0;
+    background:var(--lime);color:#04120a;transition:.2s var(--ease);white-space:nowrap;
+    box-shadow:0 0 0 rgba(199,240,46,0);
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(199,240,46,.4)}
+  .btn.ghost{background:transparent;color:var(--lime);border:1px solid var(--lime)}
+  .btn.ghost:hover{background:rgba(199,240,46,.1)}
+  .btn.gold{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#2a1a00}
+
+  /* ---------- HERO ---------- */
+  .hero{min-height:100svh;display:flex;align-items:center;justify-content:center;padding:92px 0 48px;overflow:hidden}
+  .hero-burst{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);width:min(150vw,1400px);height:min(150vw,1400px);
+    background:radial-gradient(circle,rgba(57,255,20,.35) 0%,rgba(0,200,5,.16) 26%,rgba(0,200,5,.05) 42%,transparent 62%);
+    z-index:0;animation:pulse 5s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.75;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}}
+  .hero-rays{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);width:min(140vw,1300px);height:min(140vw,1300px);z-index:0;
+    background:repeating-conic-gradient(from 0deg,rgba(199,240,46,.09) 0deg 6deg,transparent 6deg 12deg);
+    -webkit-mask:radial-gradient(circle,#000 8%,transparent 60%);mask:radial-gradient(circle,#000 8%,transparent 60%);
+    animation:spin 60s linear infinite;opacity:.7}
+  @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+  .hero-inner{position:relative;z-index:3;width:100%;text-align:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:12px;padding:8px 16px;border:1px solid var(--line);border-radius:999px;
+    font-family:'Space Mono',monospace;font-size:12.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--lime);
+    background:rgba(199,240,46,.05);margin-bottom:30px}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon);animation:blink 1.4s steps(2) infinite}
+  @keyframes blink{50%{opacity:.25}}
+
+  .hero h1{font-size:clamp(52px,11vw,168px);letter-spacing:-.01em}
+  .hero h1 .tilt{display:inline-block;transform:skewX(-8deg);color:var(--lime);text-shadow:0 0 40px rgba(199,240,46,.55)}
+  .hero h1 .stroke{-webkit-text-stroke:2px var(--lime);color:transparent;text-shadow:none}
+  .hero-clover{width:clamp(64px,9vw,112px);height:auto;border-radius:18px;object-fit:cover;vertical-align:-20%;margin:0 .1em;filter:drop-shadow(0 0 26px rgba(57,255,20,.6));animation:tumble 9s ease-in-out infinite}
+  @keyframes tumble{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+  .hero p.sub{max-width:640px;margin:26px auto 0;font-size:clamp(16px,2vw,20px);color:#c4dcbf}
+  .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:38px}
+  .hero-note{margin-top:20px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--muted-2);text-transform:uppercase}
+
+  /* ticker strip */
+  .tickerbar{position:relative;z-index:4;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(0,0,0,.55);overflow:hidden}
+  .ticker{display:flex;gap:0;white-space:nowrap;animation:marq 26s linear infinite;will-change:transform}
+  .ticker .item{display:flex;align-items:center;gap:12px;padding:14px 26px;font-family:'Space Mono',monospace;font-size:13.5px;letter-spacing:.05em;border-right:1px solid var(--line)}
+  .ticker .up{color:var(--neon)}.ticker .sym{color:var(--lime);font-weight:700}
+  @keyframes marq{to{transform:translateX(-50%)}}
+
+  /* ---------- SECTION SHELL ---------- */
+  .sec{padding:clamp(80px,12vw,150px) 0}
+  .sec-head{max-width:760px;margin:0 auto 60px;text-align:center}
+  .kicker{font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--lime);margin-bottom:16px}
+  .sec-head h2{font-size:clamp(38px,6vw,84px)}
+  .sec-head h2 em{font-style:normal;color:var(--lime)}
+  .sec-head p{margin-top:18px;color:#b7cfb2;font-size:clamp(16px,2vw,19px)}
+
+  /* reveal — hidden state only applies when JS is live, so no-JS users still see everything */
+  .reveal{transition:opacity .7s var(--ease),transform .7s var(--ease)}
+  .js .reveal{opacity:0;transform:translateY(34px)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- SCRATCH ---------- */
+  .scratch-wrap{max-width:560px;margin:0 auto;text-align:center}
+  .ticket{
+    position:relative;border-radius:22px;padding:6px;
+    background:
+      linear-gradient(135deg,var(--rh),var(--lime-2));
+    box-shadow:0 30px 80px -20px rgba(0,200,5,.5),0 0 0 1px rgba(199,240,46,.4);
+  }
+  .ticket-inner{position:relative;border-radius:17px;background:var(--void);overflow:hidden;padding:0}
+  .ticket-top{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px dashed rgba(199,240,46,.3);font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .ticket-top b{color:var(--lime)}
+  .scratch-stage{position:relative;height:260px;display:grid;place-items:center}
+  .prize{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px}
+  .prize .big{font-family:'Anton',sans-serif;font-size:clamp(46px,11vw,78px);color:var(--gold);text-shadow:0 0 34px rgba(255,197,61,.6);line-height:.9}
+  .prize .lbl{font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--neon);margin-top:12px}
+  #scratchCanvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab;touch-action:none;border-radius:0}
+  #scratchCanvas:active{cursor:grabbing}
+  .ticket-bottom{padding:14px 20px;border-top:1px dashed rgba(199,240,46,.3);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--muted-2);text-transform:uppercase;display:flex;justify-content:space-between}
+  .scratch-hint{margin-top:22px;font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.06em;color:var(--muted)}
+  .scratch-hint b{color:var(--lime)}
+
+  /* ---------- BIG HITS ---------- */
+  .hits{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .hit{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:30px 26px;position:relative;overflow:hidden;transition:.3s var(--ease)}
+  .hit:hover{transform:translateY(-5px);border-color:rgba(199,240,46,.4);box-shadow:0 20px 50px -25px rgba(0,200,5,.5)}
+  .hit::after{content:"";position:absolute;top:-40%;right:-30%;width:180px;height:180px;background:radial-gradient(circle,rgba(57,255,20,.16),transparent 70%)}
+  .hit .from{font-family:'Space Mono',monospace;font-size:13px;color:var(--muted);letter-spacing:.06em}
+  .hit .to{font-family:'Anton',sans-serif;font-size:clamp(34px,5vw,52px);color:var(--neon);margin:6px 0 4px;text-shadow:0 0 24px rgba(57,255,20,.35)}
+  .hit .mult{display:inline-block;font-family:'Space Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.08em;color:#04120a;background:var(--lime);padding:4px 10px;border-radius:6px;margin-top:10px}
+  .hit .cap{margin-top:14px;font-size:14px;color:#a7c0a2;line-height:1.5}
+
+  /* ---------- CHART / THE RUN ---------- */
+  .run{background:linear-gradient(180deg,transparent,rgba(0,200,5,.04) 40%,transparent);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .run-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:56px;align-items:center}
+  .run-copy h2{font-size:clamp(40px,6vw,86px)}
+  .run-copy h2 span{color:var(--lime)}
+  .run-copy p{margin-top:20px;color:#b7cfb2;max-width:520px}
+  .run-stats{display:flex;gap:30px;margin-top:32px}
+  .run-stat .n{font-family:'Anton',sans-serif;font-size:clamp(32px,4vw,46px);color:var(--neon)}
+  .run-stat .k{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .chart-card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;position:relative;overflow:hidden}
+  .chart-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .chart-head .price{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--cream)}
+  .chart-head .chg{font-family:'Space Mono',monospace;font-size:14px;color:var(--neon)}
+  .chart-head .tk{font-family:'Anton',sans-serif;font-size:20px;color:var(--lime)}
+  svg.chart{width:100%;height:auto;display:block}
+  .chart .line{fill:none;stroke:var(--neon);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;
+    filter:drop-shadow(0 0 6px rgba(57,255,20,.7));stroke-dasharray:1600;transition:stroke-dashoffset 2.4s var(--ease)}
+  .js .chart .line{stroke-dashoffset:1600}
+  .chart.in .line{stroke-dashoffset:0}
+  .chart .fillarea{fill:url(#g);transition:opacity 1s ease 1.4s}
+  .js .chart .fillarea{opacity:0}
+  .chart.in .fillarea{opacity:1}
+  .chart .dot{fill:var(--neon);transition:opacity .4s ease 2.3s}
+  .js .chart .dot{opacity:0}
+  .chart.in .dot{opacity:1}
+
+  /* ---------- RULES (ticket back) ---------- */
+  .rules{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+  .rule{background:var(--void);padding:38px 30px;transition:.3s}
+  .rule:hover{background:var(--panel)}
+  .rule .no{font-family:'Space Mono',monospace;font-size:13px;color:var(--lime);letter-spacing:.1em}
+  .rule h3{font-family:'Anton',sans-serif;font-size:26px;margin:14px 0 12px;color:var(--cream)}
+  .rule p{font-size:15px;color:#a7c0a2;line-height:1.6}
+
+  /* symbols row */
+  .legend{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-top:44px}
+  .leg{display:flex;align-items:center;gap:12px;font-family:'Space Mono',monospace;font-size:13px;color:var(--muted);letter-spacing:.04em}
+  .leg .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--panel);border:1px solid var(--line);font-size:20px}
+  .leg b{color:var(--lime)}
+
+  /* ---------- FAQ ---------- */
+  .faq{max-width:800px;margin:0 auto}
+  .q{border-bottom:1px solid var(--line)}
+  .q button{width:100%;background:none;border:0;color:var(--cream);text-align:left;padding:24px 4px;font-family:'Space Grotesk',sans-serif;font-size:clamp(17px,2.4vw,21px);font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px}
+  .q .plus{color:var(--lime);font-size:26px;font-family:'Space Mono',monospace;transition:transform .3s;flex-shrink:0}
+  .q.open .plus{transform:rotate(45deg)}
+  .q .a{max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
+  .q .a p{padding:0 4px 26px;color:#a7c0a2;margin:0;max-width:660px}
+
+  /* ---------- FINAL CTA ---------- */
+  .final{text-align:center;padding:clamp(90px,14vw,170px) 0;position:relative;overflow:hidden}
+  .final .glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:900px;background:radial-gradient(circle,rgba(57,255,20,.22),transparent 60%);z-index:0}
+  .final .inner{position:relative;z-index:2}
+  .final h2{font-size:clamp(44px,9vw,140px);line-height:.9}
+  .final h2 em{font-style:normal;color:var(--lime);text-shadow:0 0 50px rgba(199,240,46,.55)}
+  .final p{max-width:560px;margin:22px auto 0;color:#c4dcbf}
+  .final .hero-cta{margin-top:40px}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--line);padding:56px 0 40px;background:var(--void-2)}
+  .foot-top{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;align-items:flex-start}
+  .foot-brand{max-width:340px}
+  .foot-brand .brand{margin-bottom:14px}
+  .foot-brand p{font-size:14px;color:var(--muted)}
+  .foot-cols{display:flex;gap:60px;flex-wrap:wrap}
+  .fcol h4{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--lime);margin:0 0 16px}
+  .fcol a{display:block;font-size:14px;color:var(--muted);margin-bottom:11px;transition:color .2s}
+  .fcol a:hover{color:var(--cream)}
+  .disclaimer{margin-top:44px;padding-top:26px;border-top:1px solid var(--line);font-family:'Space Mono',monospace;font-size:11.5px;line-height:1.7;color:var(--muted-2);letter-spacing:.02em}
+  .disclaimer b{color:var(--muted)}
+  .copy{margin-top:20px;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted-2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media(max-width:900px){
+    .nav-links{display:none}
+    .hits{grid-template-columns:1fr}
+    .rules{grid-template-columns:1fr}
+    .run-grid{grid-template-columns:1fr;gap:40px}
+    .run-copy{text-align:center}.run-stats{justify-content:center}
+  }
+  @media(max-width:560px){
+    .nav-right .btn.ghost{display:none}
+    .ticket-top{font-size:10px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}
+    .chart .line{stroke-dashoffset:0}.chart .fillarea,.chart .dot{opacity:1}
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="scanline"></div>
+<div class="float-field" id="floatField" aria-hidden="true"></div>
+
+<!-- ================= NAV ================= -->
+<header id="header">
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="Lucky Coin home">
+      <img class="chip" src="assets/logo.png" alt="Lucky Coin clover logo" />
+      <span>LUCKY<b>COIN</b></span>
+    </a>
+    <div class="nav-right">
+      <nav class="nav-links">
+        <a href="#scratch">Scratch</a>
+        <a href="#hits">Big Hits</a>
+        <a href="#run">The Run</a>
+        <a href="#rules">Rules</a>
+      </nav>
+      <a class="btn ghost" href="#rules">How it works</a>
+      <a class="btn" href="#scratch">Get Lucky <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <div class="hero-rays" aria-hidden="true"></div>
+  <div class="hero-burst" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+    <span class="eyebrow"><span class="dot"></span> $LUCKY · NO UTILITY · PURE LUCK</span>
+    <h1>
+      What if<br/>
+      you got <span class="tilt">lucky</span><img class="hero-clover" src="assets/logo.png" alt="" aria-hidden="true" />?
+    </h1>
+    <p class="sub">The luckiest coin on Robinhood. No roadmap. No promises. No product. Just the one question every winner asked before they were winners.</p>
+    <div class="hero-cta">
+      <a class="btn gold" href="#scratch">Scratch the ticket <span aria-hidden="true">🍀</span></a>
+      <a class="btn ghost" href="#run">See what a run looks like</a>
+    </div>
+    <p class="hero-note">// this is a gamble, not a plan. that's the whole point.</p>
+  </div>
+</section>
+
+<div class="tickerbar" aria-hidden="true">
+  <div class="ticker" id="ticker"></div>
+</div>
+
+<!-- ================= SCRATCH ================= -->
+<section class="sec" id="scratch">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">Section 01 — The Ticket</div>
+      <h2>Scratch it. <em>See if it's the one.</em></h2>
+      <p>Every lottery ticket looks the same until you scratch it. So does every coin. Drag across the foil and find out what's under yours.</p>
+    </div>
+
+    <div class="scratch-wrap reveal">
+      <div class="ticket">
+        <div class="ticket-inner">
+          <div class="ticket-top"><span>LUCKY COIN · <b>$LUCKY</b></span><span>TICKET #000000001</span></div>
+          <div class="scratch-stage">
+            <div class="prize" id="prize">
+              <div>
+                <div class="big" id="prizeBig">1,000×</div>
+                <div class="lbl" id="prizeLbl">🍀 you scratched a winner</div>
+              </div>
+            </div>
+            <canvas id="scratchCanvas"></canvas>
+          </div>
+          <div class="ticket-bottom"><span>MATCH THE MOMENT</span><span>WIN: EVERYTHING OR NOTHING</span></div>
+        </div>
+      </div>
+      <p class="scratch-hint">Drag across the ticket to scratch. <b>Or don't</b> — the odds are the same either way.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BIG HITS ================= -->
+<section class="sec" id="hits">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">Section 02 — The Hits</div>
+      <h2>People got <em>stupid</em> lucky before.</h2>
+      <p>Every cycle, a coin with no utility, no team, and no reason to exist turns lunch money into a house. We're not saying it'll happen again. We're asking: what if it's this one?</p>
+    </div>
+
+    <div class="hits">
+      <div class="hit reveal">
+        <div class="from">$100 turned into</div>
+        <div class="to" data-count="847000" data-prefix="$">$847,000</div>
+        <span class="mult">8,470×</span>
+        <p class="cap">The last "worthless" dog coin. Bought as a joke. Held out of laziness. Changed a life by accident.</p>
+      </div>
+      <div class="hit reveal">
+        <div class="from">$500 turned into</div>
+        <div class="to" data-count="2100000" data-prefix="$">$2,100,000</div>
+        <span class="mult">4,200×</span>
+        <p class="cap">A frog. Literally a frog. No product, no roadmap — just a picture and a crowd that believed for long enough.</p>
+      </div>
+      <div class="hit reveal">
+        <div class="from">$50 turned into</div>
+        <div class="to" data-count="612000" data-prefix="$">$612,000</div>
+        <span class="mult">12,240×</span>
+        <p class="cap">Someone's throwaway wallet from four years ago. They forgot it existed. It didn't forget them.</p>
+      </div>
+    </div>
+    <p class="hero-note" style="text-align:center;margin-top:34px">// hypothetical scenarios. past luck is not future luck. luck is not a strategy.</p>
+  </div>
+</section>
+
+<!-- ================= THE RUN ================= -->
+<section class="sec run" id="run">
+  <div class="wrap run-grid">
+    <div class="run-copy reveal">
+      <div class="kicker">Section 03 — The Run</div>
+      <h2>What if this was<br/>the one that <span>actually ran?</span></h2>
+      <p>Not a slow grind. Not a "long-term hold." A run. The kind where you check your phone, check it again, and realize the number is real. Make no mistakes — most tickets lose. But somebody's is the one.</p>
+      <div class="run-stats">
+        <div class="run-stat"><div class="n" data-count="1000000000" data-prefix="$" data-compact="1">$1B</div><div class="k">Target: a billy</div></div>
+        <div class="run-stat"><div class="n">0</div><div class="k">Utility shipped</div></div>
+        <div class="run-stat"><div class="n">100%</div><div class="k">Narrative</div></div>
+      </div>
+    </div>
+
+    <div class="chart-card reveal">
+      <div class="chart-head">
+        <span class="tk">$LUCKY</span>
+        <div style="text-align:right">
+          <div class="price" id="livePrice">$0.00004</div>
+          <div class="chg" id="liveChg">▲ +9,400%</div>
+        </div>
+      </div>
+      <svg class="chart" id="chart" viewBox="0 0 600 300" preserveAspectRatio="none" aria-label="A price chart curving parabolically upward">
+        <defs>
+          <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="rgba(57,255,20,.35)"/>
+            <stop offset="100%" stop-color="rgba(57,255,20,0)"/>
+          </linearGradient>
+        </defs>
+        <path class="fillarea" d="M0,292 C120,288 220,278 320,240 C400,208 460,150 510,80 C540,38 570,14 596,8 L596,300 L0,300 Z"/>
+        <path class="line" d="M0,292 C120,288 220,278 320,240 C400,208 460,150 510,80 C540,38 570,14 596,8"/>
+        <circle class="dot" cx="596" cy="8" r="5.5"/>
+      </svg>
+      <div class="ticket-bottom" style="border-top:1px dashed rgba(199,240,46,.3);border-radius:0;margin-top:8px">
+        <span>SIMULATED · NOT A QUOTE</span><span>MOOD: DELUSIONAL</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RULES ================= -->
+<section class="sec" id="rules">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">Section 04 — The Fine Print (in big print)</div>
+      <h2>The rules of the <em>ticket</em>.</h2>
+      <p>Read the back of any lottery ticket and it's honest with you. So is this. Here's exactly what you're buying.</p>
+    </div>
+
+    <div class="rules reveal">
+      <div class="rule">
+        <div class="no">01</div>
+        <h3>No utility.<br/>None.</h3>
+        <p>There's no app, no staking, no "ecosystem," no whitepaper pretending otherwise. There is a ticker and a feeling. Anyone who tells you different is selling you a different lie.</p>
+      </div>
+      <div class="rule">
+        <div class="no">02</div>
+        <h3>It's a gamble.<br/>Own that.</h3>
+        <p>You're not investing. You're buying a scratch ticket that happens to trade 24/7. Bet what you'd be fine lighting on fire, and not a dollar past it.</p>
+      </div>
+      <div class="rule">
+        <div class="no">03</div>
+        <h3>The narrative<br/>is the coin.</h3>
+        <p>It runs on one question, asked by enough people at once: what if this is the lucky one? If the crowd believes long enough, the chart answers. If it doesn't, it's a candle.</p>
+      </div>
+    </div>
+
+    <div class="legend reveal">
+      <div class="leg"><span class="ic">🍀</span> Match any <b>YOUR NUMBER</b> — you were early</div>
+      <div class="leg"><span class="ic">💰</span> Reveal a bag — <b>you're delusional</b> (that's allowed)</div>
+      <div class="leg"><span class="ic">🎰</span> Match all fifteen — <b>you never had to work again</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="kicker">Section 05 — Questions you already know the answer to</div>
+      <h2>But you'll ask <em>anyway</em>.</h2>
+    </div>
+    <div class="faq reveal">
+      <div class="q"><button>Is this financial advice? <span class="plus">+</span></button><div class="a"><p>No. It is barely a coin. It is a green button that asks a question. We are not licensed to advise you on anything, least of all this. If you need advice, the advice is: don't bet the rent.</p></div></div>
+      <div class="q"><button>What does $LUCKY actually do? <span class="plus">+</span></button><div class="a"><p>It goes up, it goes down, and it makes you feel something. That's the entire feature set. We shipped zero utility on purpose — utility is a promise, and promises are how you get disappointed.</p></div></div>
+      <div class="q"><button>Will it run to a billion? <span class="plus">+</span></button><div class="a"><p>Probably not. Almost certainly not. Most tickets lose — that's what makes the winning one worth anything. But "probably not" and "definitely not" are very different numbers, and the whole game lives in the gap.</p></div></div>
+      <div class="q"><button>Why Robinhood green? <span class="plus">+</span></button><div class="a"><p>Because that shade of green is the color of a good day. It's the color your app turns when the number is up. We just made a coin out of the feeling.</p></div></div>
+      <div class="q"><button>Should I buy this? <span class="plus">+</span></button><div class="a"><p>We can't tell you that, and we wouldn't. Only buy what you can afford to lose completely. If reading that sentence made you flinch, you already have your answer.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL CTA ================= -->
+<section class="final">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="wrap inner reveal">
+    <h2>Maybe it's<br/>your <em>lucky</em> coin.</h2>
+    <p>Maybe it's not. There's exactly one way to find out, and it's the same way it's always been.</p>
+    <div class="hero-cta">
+      <a class="btn gold" href="#scratch">Scratch the ticket <span aria-hidden="true">🍀</span></a>
+      <a class="btn ghost" href="#top">Back to the top</a>
+    </div>
+    <p class="hero-note" style="margin-top:26px">// what if you got lucky?</p>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a class="brand" href="#top">
+          <img class="chip" src="assets/logo.png" alt="Lucky Coin clover logo" />
+          <span>LUCKY<b>COIN</b></span>
+        </a>
+        <p>A meme coin about the moment before you know. No utility, no roadmap, no apologies. The luckiest coin on Robinhood.</p>
+      </div>
+      <div class="foot-cols">
+        <div class="fcol">
+          <h4>The Coin</h4>
+          <a href="#scratch">Scratch the ticket</a>
+          <a href="#hits">Big hits</a>
+          <a href="#run">The run</a>
+          <a href="#rules">Rules</a>
+        </div>
+        <div class="fcol">
+          <h4>The Crowd</h4>
+          <a href="#" onclick="return false">Community (X)</a>
+          <a href="#" onclick="return false">Telegram</a>
+          <a href="#" onclick="return false">Chart</a>
+          <a href="#" onclick="return false">Contract</a>
+        </div>
+      </div>
+    </div>
+
+    <p class="disclaimer">
+      <b>DISCLAIMER —</b> $LUCKY is a meme coin with no intrinsic value, no expectation of financial return, and no utility of any kind. Nothing on this page is an offer, solicitation, or recommendation to buy or sell any asset, and nothing here is financial, investment, legal, or tax advice. All figures, charts, tickets, and "hits" shown are hypothetical and for entertainment only — they are not quotes, predictions, or guarantees. Crypto is extremely high risk; you can and likely will lose everything you put in. Never spend more than you are fully prepared to lose. Do your own research and, if you need it, speak to a licensed professional. You are responsible for your own choices — this coin is a gamble, and it says so on the front.
+    </p>
+    <div class="copy">
+      <span>© 2026 LUCKY COIN · $LUCKY · not affiliated with Robinhood Markets, Inc.</span>
+      <span>🍀 what if you got lucky?</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- nav scrolled ---- */
+  var header = document.getElementById('header');
+  function onScroll(){ header.classList.toggle('scrolled', window.scrollY > 20); }
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+  /* ---- floating clovers/coins ---- */
+  (function(){
+    if(reduce) return;
+    var field = document.getElementById('floatField');
+    var glyphs = ['🍀','🪙','🍀','💚','🍀'];
+    for(var i=0;i<14;i++){
+      var s = document.createElement('div');
+      s.className='floater';
+      s.textContent = glyphs[i%glyphs.length];
+      var size = 14 + Math.random()*30;
+      s.style.left = (Math.random()*100)+'%';
+      s.style.fontSize = size+'px';
+      s.style.animationDuration = (16+Math.random()*22)+'s';
+      s.style.animationDelay = (-Math.random()*30)+'s';
+      field.appendChild(s);
+    }
+  })();
+
+  /* ---- ticker strip ---- */
+  (function(){
+    var data = [
+      ['$LUCKY','+9,400%'],['CLOVER','+412%'],['MOON','+88%'],['DEGEN','+1,203%'],
+      ['WAGMI','+64%'],['4LEAF','+740%'],['JACKPOT','+2,690%'],['GREEN','+119%'],
+      ['LUCKY7','+555%'],['RUNIT','+9,999%']
+    ];
+    var html='';
+    for(var pass=0;pass<2;pass++){
+      for(var i=0;i<data.length;i++){
+        html+='<span class="item"><span class="sym">'+data[i][0]+'</span> <span class="mono">0.000'+((i*7+3)%9+1)+'x</span> <span class="up">▲ '+data[i][1]+'</span></span>';
+      }
+    }
+    document.getElementById('ticker').innerHTML = html;
+  })();
+
+  /* ---- reveal on scroll ---- */
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window) || reduce){
+      els.forEach(function(e){e.classList.add('in');}); return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
+    },{threshold:.16});
+    els.forEach(function(e){io.observe(e);});
+  })();
+
+  /* ---- count up ---- */
+  function fmt(n, prefix, compact){
+    if(compact && n>=1e9) return prefix+(n/1e9).toFixed(2).replace(/\.00$/,'')+'B';
+    if(compact && n>=1e6) return prefix+(n/1e6).toFixed(1)+'M';
+    return prefix + Math.round(n).toLocaleString('en-US');
+  }
+  (function(){
+    var nums = document.querySelectorAll('[data-count]');
+    function run(el){
+      var target = +el.getAttribute('data-count');
+      var prefix = el.getAttribute('data-prefix')||'';
+      var compact = el.getAttribute('data-compact')==='1';
+      if(reduce){ el.textContent = fmt(target,prefix,compact); return; }
+      var start=null, dur=1800;
+      function step(ts){
+        if(!start) start=ts;
+        var p=Math.min((ts-start)/dur,1);
+        var eased=1-Math.pow(1-p,3);
+        el.textContent = fmt(target*eased, prefix, compact);
+        if(p<1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    if(!('IntersectionObserver' in window)){ nums.forEach(run); return; }
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ run(e.target); io.unobserve(e.target);} });
+    },{threshold:.5});
+    nums.forEach(function(n){io.observe(n);});
+  })();
+
+  /* ---- chart draw ---- */
+  (function(){
+    var chart=document.getElementById('chart');
+    if(!chart) return;
+    if(reduce){ chart.classList.add('in'); return; }
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ chart.classList.add('in'); io.unobserve(chart);} });
+    },{threshold:.4});
+    io.observe(chart);
+  })();
+
+  /* ---- FAQ accordion ---- */
+  (function(){
+    var qs=document.querySelectorAll('.q');
+    qs.forEach(function(q){
+      var btn=q.querySelector('button'), a=q.querySelector('.a');
+      btn.addEventListener('click',function(){
+        var open=q.classList.contains('open');
+        qs.forEach(function(o){o.classList.remove('open');o.querySelector('.a').style.maxHeight='0';});
+        if(!open){ q.classList.add('open'); a.style.maxHeight=a.scrollHeight+'px'; }
+      });
+    });
+  })();
+
+  /* ---- SCRATCH CARD ---- */
+  (function(){
+    var canvas=document.getElementById('scratchCanvas');
+    if(!canvas) return;
+    var ctx=canvas.getContext('2d');
+    var stage=canvas.parentElement;
+    var prizes=[
+      ['1,000×','🍀 you scratched a winner'],
+      ['100×','💚 not bad, degen'],
+      ['LOSER','🪙 better luck next candle'],
+      ['1,000,000×','🎰 the one that actually ran'],
+      ['5×','🍀 barely lucky, still lucky'],
+      ['0','💀 this is the realistic one'],
+      ['A BILLY','🚀 what if. WHAT IF.']
+    ];
+    var revealed=false, w=0, h=0, dpr=Math.min(window.devicePixelRatio||1,2);
+
+    function pickPrize(){
+      var p=prizes[Math.floor(Math.random()*prizes.length)];
+      document.getElementById('prizeBig').textContent=p[0];
+      document.getElementById('prizeLbl').textContent=p[1];
+    }
+
+    function paintFoil(){
+      var rect=stage.getBoundingClientRect();
+      w=rect.width; h=rect.height;
+      canvas.width=w*dpr; canvas.height=h*dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      // foil base
+      var g=ctx.createLinearGradient(0,0,w,h);
+      g.addColorStop(0,'#0c8a12'); g.addColorStop(.5,'#12b81c'); g.addColorStop(1,'#0a6b0f');
+      ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      // sheen streaks
+      ctx.globalAlpha=.16; ctx.strokeStyle='#dfffb'; ctx.lineWidth=2;
+      for(var i=-h;i<w;i+=16){ ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i+h,h); ctx.stroke(); }
+      ctx.globalAlpha=1;
+      // repeated clover pattern text
+      ctx.fillStyle='rgba(4,20,8,.32)';
+      ctx.font='bold 22px "Space Mono", monospace';
+      ctx.textAlign='center';
+      for(var y=28;y<h;y+=44){
+        for(var x=0;x<w+40;x+=64){
+          ctx.fillText('🍀', x + (y/44%2?0:32), y);
+        }
+      }
+      // label
+      ctx.fillStyle='rgba(4,18,6,.85)';
+      ctx.font='800 20px "Space Grotesk", sans-serif';
+      ctx.fillText('SCRATCH HERE', w/2, h/2-6);
+      ctx.font='700 12px "Space Mono", monospace';
+      ctx.fillText('drag to reveal', w/2, h/2+16);
+    }
+
+    function pos(e){
+      var r=canvas.getBoundingClientRect();
+      var pt=e.touches?e.touches[0]:e;
+      return {x:pt.clientX-r.left, y:pt.clientY-r.top};
+    }
+    function scratch(x,y){
+      ctx.globalCompositeOperation='destination-out';
+      ctx.beginPath(); ctx.arc(x,y,26,0,Math.PI*2); ctx.fill();
+      ctx.globalCompositeOperation='source-over';
+    }
+    function pctCleared(){
+      try{
+        var img=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+        var clear=0, step=64; // sample
+        for(var i=3;i<img.length;i+=step){ if(img[i]===0) clear++; }
+        return clear/(img.length/step);
+      }catch(err){ return 0; }
+    }
+    function checkReveal(){
+      if(revealed) return;
+      if(pctCleared()>0.55){
+        revealed=true;
+        canvas.style.transition='opacity .6s ease';
+        canvas.style.opacity='0';
+        setTimeout(function(){ canvas.style.pointerEvents='none'; },600);
+      }
+    }
+
+    var drawing=false, moved=0;
+    function down(e){ drawing=true; var p=pos(e); scratch(p.x,p.y); e.preventDefault(); }
+    function move(e){
+      if(!drawing) return;
+      var p=pos(e); scratch(p.x,p.y);
+      if((++moved)%6===0) checkReveal();
+      e.preventDefault();
+    }
+    function up(){ drawing=false; checkReveal(); }
+
+    canvas.addEventListener('mousedown',down);
+    window.addEventListener('mousemove',move,{passive:false});
+    window.addEventListener('mouseup',up);
+    canvas.addEventListener('touchstart',down,{passive:false});
+    canvas.addEventListener('touchmove',move,{passive:false});
+    canvas.addEventListener('touchend',up);
+
+    var t;
+    window.addEventListener('resize',function(){
+      clearTimeout(t);
+      t=setTimeout(function(){ if(!revealed){ paintFoil(); } },200);
+    });
+
+    // init after fonts settle
+    pickPrize();
+    setTimeout(paintFoil, 120);
+    if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ if(!revealed) paintFoil(); }); }
+  })();
+
+})();
+</script>
+
+<!-- Vercel Web Analytics (static-site snippet; auto-served once enabled in the Vercel project) -->
+<script>window.va=window.va||function(){(window.vaq=window.vaq||[]).push(arguments);};</script>
+<script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>
