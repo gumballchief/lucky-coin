@@ -28,7 +28,11 @@
 <br/>
 <br/>
 
-> **`CA:` coming soon — drop time TBA** &nbsp;🍀
+**Contract Address**
+
+```
+0x0b6fb06b754d07dfd6dbbf495841a86b08f0b59d
+```
 
 </div>
 

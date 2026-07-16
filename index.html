@@ -108,6 +108,17 @@
   .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:38px}
   .hero-note{margin-top:20px;font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--muted-2);text-transform:uppercase}
 
+  /* contract-address copy bar */
+  .ca-copy{display:inline-flex;align-items:center;gap:11px;margin:26px auto 0;padding:8px;border:1px solid var(--line);border-radius:999px;background:rgba(0,0,0,.45);cursor:pointer;transition:.2s var(--ease);max-width:100%;-webkit-tap-highlight-color:transparent;font-family:'Space Mono',monospace}
+  .ca-copy:hover{border-color:var(--lime);box-shadow:0 8px 26px rgba(199,240,46,.2)}
+  .ca-copy .ca-label{font-size:11px;font-weight:700;letter-spacing:.12em;color:#04120a;background:var(--lime);padding:6px 12px;border-radius:999px;flex-shrink:0}
+  .ca-copy .ca-addr{font-size:14px;color:var(--cream);white-space:nowrap;transition:color .2s;padding-left:2px}
+  .ca-copy .ca-icon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:rgba(199,240,46,.12);color:var(--lime);flex-shrink:0;transition:.2s}
+  .ca-copy .ca-icon svg{width:15px;height:15px;fill:currentColor}
+  .ca-copy.copied{border-color:var(--lime)}
+  .ca-copy.copied .ca-addr{color:var(--lime)}
+  .ca-copy.copied .ca-icon{background:var(--lime);color:#04120a}
+
   /* ticker strip */
   .tickerbar{position:relative;z-index:4;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(0,0,0,.55);overflow:hidden}
   .ticker{display:flex;gap:0;white-space:nowrap;animation:marq 26s linear infinite;will-change:transform}
@@ -293,6 +304,11 @@
       <a class="btn gold" href="#scratch">Scratch the ticket <span aria-hidden="true">🍀</span></a>
       <a class="btn ghost" href="#run">See what a run looks like</a>
     </div>
+    <button class="ca-copy" data-ca="0x0b6fb06b754d07dfd6dbbf495841a86b08f0b59d" title="0x0b6fb06b754d07dfd6dbbf495841a86b08f0b59d" aria-label="Copy contract address">
+      <span class="ca-label">CA</span>
+      <span class="ca-addr">0x0b6f…0b59d</span>
+      <span class="ca-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v12h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg></span>
+    </button>
     <p class="hero-note">// this is a gamble, not a plan. that's the whole point.</p>
   </div>
 </section>
@@ -492,7 +508,7 @@
         <div class="fcol">
           <h4>The Crowd</h4>
           <a href="https://x.com/LuckyCoinOnRH" target="_blank" rel="noopener">X</a>
-          <a href="#" onclick="return false">Contract</a>
+          <a href="#" class="ca-link" data-ca="0x0b6fb06b754d07dfd6dbbf495841a86b08f0b59d" title="Copy contract address">Contract</a>
         </div>
       </div>
     </div>
@@ -725,6 +741,45 @@
     pickPrize();
     setTimeout(paintFoil, 120);
     if(document.fonts && document.fonts.ready){ document.fonts.ready.then(function(){ if(!revealed) paintFoil(); }); }
+  })();
+
+  /* ---- COPY CONTRACT ADDRESS ---- */
+  (function(){
+    function copy(text, cb){
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){cb(true);},function(){legacy(text,cb);});
+      } else { legacy(text,cb); }
+    }
+    function legacy(text, cb){
+      try{
+        var t=document.createElement('textarea');
+        t.value=text; t.setAttribute('readonly','');
+        t.style.position='fixed'; t.style.top='-1000px'; t.style.opacity='0';
+        document.body.appendChild(t); t.select(); t.setSelectionRange(0,text.length);
+        var ok=document.execCommand('copy'); document.body.removeChild(t); cb(!!ok);
+      }catch(e){ cb(false); }
+    }
+    var nodes=document.querySelectorAll('[data-ca]');
+    Array.prototype.forEach.call(nodes,function(el){
+      var full=el.getAttribute('data-ca');
+      var addr=el.querySelector('.ca-addr');
+      var shortAddr = addr ? (full.slice(0,6)+'…'+full.slice(-4)) : null;
+      var original = addr ? null : el.textContent;
+      var timer;
+      el.addEventListener('click',function(e){
+        e.preventDefault();
+        copy(full,function(ok){
+          el.classList.add('copied');
+          if(addr){ addr.textContent = ok ? 'Copied' : 'Copy failed'; }
+          else { el.textContent = ok ? 'Copied' : 'Copy failed'; }
+          clearTimeout(timer);
+          timer=setTimeout(function(){
+            el.classList.remove('copied');
+            if(addr){ addr.textContent = shortAddr; } else { el.textContent = original; }
+          },1600);
+        });
+      });
+    });
   })();
 
 })();
