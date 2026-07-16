@@ -76,6 +76,9 @@
   .btn.ghost{background:transparent;color:var(--lime);border:1px solid var(--lime)}
   .btn.ghost:hover{background:rgba(199,240,46,.1)}
   .btn.gold{background:linear-gradient(135deg,var(--gold-2),var(--gold));color:#2a1a00}
+  .x-btn{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--cream);transition:.2s var(--ease);flex-shrink:0}
+  .x-btn:hover{border-color:var(--lime);color:var(--lime);transform:translateY(-2px);box-shadow:0 8px 22px rgba(199,240,46,.25)}
+  .x-btn svg{width:16px;height:16px;fill:currentColor}
 
   /* ---------- HERO ---------- */
   .hero{min-height:100svh;display:flex;align-items:center;justify-content:center;padding:92px 0 48px;overflow:hidden}
@@ -266,6 +269,9 @@
         <a href="#run">The Run</a>
         <a href="#rules">Rules</a>
       </nav>
+      <a class="x-btn" href="https://x.com/LuckyCoinOnRH" target="_blank" rel="noopener" aria-label="Follow $LUCKY on X">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
       <a class="btn ghost" href="#rules">How it works</a>
       <a class="btn" href="#scratch">Get Lucky <span aria-hidden="true">→</span></a>
     </div>
@@ -485,8 +491,7 @@
         </div>
         <div class="fcol">
           <h4>The Crowd</h4>
-          <!-- X_LINK: set href to the X account when it's live -->
-          <a href="#" onclick="return false">X</a>
+          <a href="https://x.com/LuckyCoinOnRH" target="_blank" rel="noopener">X</a>
           <a href="#" onclick="return false">Contract</a>
         </div>
       </div>

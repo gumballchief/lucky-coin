@@ -23,8 +23,7 @@
 
 <a href="https://luckycoin.fun"><img src="https://img.shields.io/badge/🍀%20luckycoin.fun-VISIT%20SITE-00C805?style=for-the-badge&labelColor=0a0f0a" /></a>&nbsp;
 <a href="https://luckycoin.fun#scratch"><img src="https://img.shields.io/badge/🎟️-SCRATCH%20THE%20TICKET-C7F02E?style=for-the-badge&labelColor=0a0f0a" /></a>
-<!-- X_BADGE: swap href + label when the account drops -->
-<a href="#"><img src="https://img.shields.io/badge/𝕏-COMING%20SOON-1a1a1a?style=for-the-badge&logo=x&logoColor=white&labelColor=0a0f0a" /></a>
+<a href="https://x.com/LuckyCoinOnRH"><img src="https://img.shields.io/badge/𝕏-@LuckyCoinOnRH-00C805?style=for-the-badge&logo=x&logoColor=white&labelColor=0a0f0a" /></a>
 
 <br/>
 <br/>
